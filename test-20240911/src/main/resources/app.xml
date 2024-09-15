@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- 객체 등록 -->
+    <bean id="tv" class="org.obj.test20240911.SamsungTV"/>
+
+    <!-- setter injection 주입 설정 - 추석 연휴 끝나고 실습할 예정-->
+</beans>
