@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="org.springframework.web.client.RestTemplate" %>
 <%@ page import="java.util.Arrays" %>
+<%@ page import="com.obj.meeting.dto.Group" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -11,31 +12,33 @@
 </head>
 <body>
 <div class="container mt-4">
-    <h1>사용자 목록</h1>
+    <h1>모임 목록</h1>
     <%
-        String apiUrl = "http://localhost:8080/user/list";
+        String apiUrl = "http://localhost:8080/group/list";
         RestTemplate restTemplate = new RestTemplate();
         try {
             // RestTemplate을 사용하여 사용자 목록 데이터를 가져옴
-            User[] users = restTemplate.getForObject(apiUrl, User[].class);
-            List<User> userList = Arrays.asList(users); // 배열을 리스트로 변환
+            Group[] groups = restTemplate.getForObject(apiUrl, Group[].class);
+            List<Group> groupList = Arrays.asList(groups); // 배열을 리스트로 변환
 
             out.print("<table class='table table-striped'>");
             out.print("<thead class='thead-dark'>");
             out.print("<tr>");
-            out.print("<th>ID</th>");
-            out.print("<th>Username</th>");
-            out.print("<th>Email</th>");
-            out.print("<th>Role</th>");
+            out.print("<th>모임 ID</th>");
+            out.print("<th>모잉 명</th>");
+            out.print("<th>모임 날짜</th>");
+            out.print("<th>모임 장소</th>");
+            out.print("<th>참여자 수</th>");
             out.print("</tr>");
             out.print("</thead>");
             out.print("<tbody>");
-            for(User user : userList) {
+            for(Group group : groupList) {
                 out.print("<tr>");
-                out.print("<td><a href='getUser.jsp?id=" + user.getId() + "'>" + user.getId() + "</a></td>");
-                out.print("<td>" + user.getUsername() + "</td>");
-                out.print("<td>" + user.getEmail() + "</td>");
-                out.print("<td>" + user.getRole() + "</td>");
+                out.print("<td><a href='getGroup?id=" + group.getGroupId() + "'>" + group.getGroupId() + "</a></td>");
+                out.print("<td>" + group.getGroupName() + "</td>");
+                out.print("<td>" + group.getMeetingDate() + "</td>");
+                out.print("<td>" + group.getMeetingAddress() + "</td>");
+                out.print("<td>" + group.getParticipantCount() + "</td>");
                 out.print("</tr>");
             }
             out.print("</tbody>");

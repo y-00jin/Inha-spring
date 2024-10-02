@@ -24,8 +24,8 @@
         <div class="form-group">
             <label for="role">Role:</label>
             <select name="role" id="role" class="form-control">
-                <option value="ADMIN">Admin</option>
-                <option value="USER">User</option>
+                <option value="ROLE_ADMIN">Admin</option>
+                <option value="ROLE_USER">User</option>
             </select>
         </div>
         <button type="submit" class="btn btn-primary">Save User</button>

@@ -11,7 +11,7 @@
 <body>
 <div class="container mt-5">
     <%
-        String id = request.getParameter("id");
+        String id = request.getParameter("username");
         String apiUrl = "http://localhost:8080/user/get/" + id;
         RestTemplate restTemplate = new RestTemplate();
 
@@ -21,7 +21,6 @@
             out.println("<h1 class='mb-3'>User Information</h1>");
             out.println("<div class='card'>");
             out.println("<div class='card-body'>");
-            out.println("<h5 class='card-title'>ID: " + user.getId() + "</h5>");
             out.println("<p class='card-text'>Username: " + user.getUsername() + "</p>");
             out.println("<p class='card-text'>Email: " + user.getEmail() + "</p>");
             out.println("<p class='card-text'>Role: " + user.getRole() + "</p>");
