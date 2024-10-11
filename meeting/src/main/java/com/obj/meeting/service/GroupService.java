@@ -33,5 +33,4 @@ public class GroupService {
         groupRepository.deleteById(groupId);
         return "DELETE SUCCESS";
     }
-
 }

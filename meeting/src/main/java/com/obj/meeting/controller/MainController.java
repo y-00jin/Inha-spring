@@ -3,17 +3,6 @@ package com.obj.meeting.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-/**
- * @PackageName : com.obj.meeting.controller
- * @FileName : MainController
- * @Date : 10/2/24
- * @Author : y00jin
- * @Description :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 10/2/24        y00jin       최초 생성
- */
 @Controller
 public class MainController {
 

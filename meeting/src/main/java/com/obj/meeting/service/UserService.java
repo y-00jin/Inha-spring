@@ -19,12 +19,10 @@ public class UserService {
     }
 
     public UserEntity getUser(String username) {
-
         return userRepository.findByUsername(username);
     }
 
     public List<UserEntity> getUserList() {
         return userRepository.findAll();
     }
-
 }

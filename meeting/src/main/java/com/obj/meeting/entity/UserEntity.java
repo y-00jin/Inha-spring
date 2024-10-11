@@ -6,17 +6,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
 
-/**
- * @PackageName : com.obj.meeting.entity
- * @FileName : UserEntity
- * @Date : 10/2/24
- * @Author : y00jin
- * @Description :
- * ===========================================================
- * DATE              AUTHOR             NOTE
- * -----------------------------------------------------------
- * 10/2/24        y00jin       최초 생성
- */
 @Entity
 @Data
 @Table(name = "users")

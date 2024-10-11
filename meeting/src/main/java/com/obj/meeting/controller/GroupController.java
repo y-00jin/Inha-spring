@@ -12,27 +12,22 @@ import java.util.List;
 public class GroupController {
     @Autowired
     private GroupService groupService;
-
     @PostMapping("/save")
     public String saveGroup(GroupEntity group){
         return groupService.saveGroup(group);
     }
-
     @GetMapping("/get/{id}")
     public GroupEntity getGroup(@PathVariable Long id){
         return groupService.getGroup(id);
     }
-
     @GetMapping("/list")
     public List<GroupEntity> getGroupList(){
         return groupService.getGroupList();
     }
-
     @PostMapping("/update")
     public String updateGroup(GroupEntity group){
         return groupService.updateGroup(group);
     }
-
     @PostMapping("/delete/{groupId}")
     public String deleteGroup(@PathVariable Long groupId){
         return groupService.deleteGroup(groupId);
