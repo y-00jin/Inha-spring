@@ -21,12 +21,15 @@ public class UserController {
     }
 
     @PostMapping("/save")
-    public String saveUser(@RequestBody User user) {
-        return userService.saveUser(user);
-    }
+// 1. 화면 jsp의 submit을 통해 보낼 경우
+//  public String saveUser(User user) { return userService.saveUser(user); }
+// 2. json 형식으로 보낼 경우 (postman)
+    public String saveUser(@RequestBody User user) { return userService.saveUser(user); }
 
     @GetMapping("/list")
     public List<User> getUserList() {
         return userService.getUserList();
     }
 }
+
+
