@@ -4,8 +4,7 @@
 <%@ page import="java.io.InputStreamReader" %>
 <%@ page import="com.google.gson.Gson" %>
 <%@ page import="org.obj.test20240911.entity.User" %>
-<%@ page language="java" contentType="text/html; charset=EUC-KR"
-         pageEncoding="EUC-KR" %>
+<%@ page language="java" contentType="text/html; charset=EUC-KR" pageEncoding="EUC-KR" %>
 
 
 <%
@@ -32,3 +31,4 @@
 
 
 %>
+
