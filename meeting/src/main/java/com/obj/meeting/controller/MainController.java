@@ -9,6 +9,9 @@ public class MainController {
     @RequestMapping("/menu")
     public void main() {}
 
+    @RequestMapping("/login")
+    public void login(){}
+
     @RequestMapping("/getUserList")
     public void getUserList() {}
 
@@ -26,4 +29,6 @@ public class MainController {
 
     @RequestMapping("/saveGroup")
     public void saveGroup() {}
+
+
 }
