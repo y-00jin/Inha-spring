@@ -15,10 +15,15 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
         <div class="navbar-nav">
-            <a class="nav-item nav-link" href="getUserList" target="contentFrame">사용자 리스트</a>
-            <a class="nav-item nav-link" href="saveUser" target="contentFrame">사용자 등록</a>
-            <a class="nav-item nav-link" href="getGroupList" target="contentFrame">모임 리스트</a>
-            <a class="nav-item nav-link" href="saveGroup" target="contentFrame">모임 등록</a>
+            <a class="nav-item nav-link" href="/getUserList" target="contentFrame">사용자 리스트</a>
+            <a class="nav-item nav-link" href="/saveUser" target="contentFrame">사용자 등록</a>
+            <a class="nav-item nav-link" href="/getGroupList" target="contentFrame">모임 리스트</a>
+            <a class="nav-item nav-link" href="/saveGroup" target="contentFrame">모임 등록</a>
+<%--            <a class="nav-item nav-link" href="/logout" target="_top">로그아웃</a>--%>
+            <form action="/logout" method="post" style="display: inline">
+                <input type="hidden" name="_csrf" value="${_csrf.token}" >
+                <a class="nav-item nav-link" href="#" onclick="this.parentNode.submit(); return false" >로그아웃</a>
+            </form>
         </div>
     </div>
 </nav>

@@ -30,5 +30,6 @@ public class MainController {
     @RequestMapping("/saveGroup")
     public void saveGroup() {}
 
-
+    @RequestMapping("/forbidden")
+    public void forbidden(){}
 }
