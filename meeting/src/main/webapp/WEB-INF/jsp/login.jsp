@@ -1,17 +1,13 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Login</title>
-    <!-- 부트스트랩 CSS 추가 -->
+    <title>로그인</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <div class="container mt-4">
     <h2>Login</h2>
-    <%--
-        <form action="http://localhost:8080/checkUser" method="post" class="mt-3">
-    --%>
-    <form method="post" class="mt-3">
+    <form id="loginForm" method="post" class="mt-3">
         <div class="form-group">
             <label for="username">Username:</label>
             <input type="text" class="form-control" id="username" name="username" required>
@@ -20,15 +16,48 @@
             <label for="password">Password:</label>
             <input type="password" class="form-control" id="password" name="password" required>
         </div>
-        <input type="hidden" name="_csrf" value="${_csrf.token}" >
         <button type="submit" class="btn btn-primary">Login</button>
     </form>
 </div>
-<!-- 부트스트랩 JS 추가 -->
+
+<footer style="position: fixed; bottom: 0; width: 100%; background-color: #f8f9fa; text-align: center; padding: 10px 0;">
+    <p>© 2024 C.J.Kim (Dept.of Computer & System Engineering). All rights reserved.</p>
+</footer>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        fetch('/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: "username=" + encodeURIComponent(username) + "&password=" + encodeURIComponent(password)
+        })
+            .then(response => {
+                const authToken = response.headers.get('Authorization');
+                alert('login 후 토큰 발급 : '+authToken);
+                if (response.ok && authToken) {
+                    localStorage.setItem('authToken', authToken.split(' ')[1]);
+                    localStorage.setItem('username', username);
+                    window.location.href = '/menu';
+                } else {
+                    throw new Error('로그인 실패 : ' + response.status);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('로그인 실패 : ' + error.message);
+            });
+    });
+</script>
 </body>
 </html>
-
-

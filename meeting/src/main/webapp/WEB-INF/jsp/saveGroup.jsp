@@ -25,10 +25,12 @@
                 String username = ((MeetingUserDetails)principal).getUsername();    // MEetingUserDetails로 파싱
 
                 // 컬렉션 형태로 권한 조회
-                Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-                Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-                GrantedAuthority grantedAuthority = iterator.next();    // 하나만 조회
-                String role = grantedAuthority.getAuthority();  // 권한 조회
+//                Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
+//                Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
+//                GrantedAuthority grantedAuthority = iterator.next();    // 하나만 조회
+//                String role = grantedAuthority.getAuthority();  // 권한 조회
+
+                String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next().getAuthority();
             %>
             <input type="text" class="form-control" id="groupManagerId" name="groupManagerId" value="<%=username%> ( <%= role.replace("ROLE_", "")%> )" readonly >
         </div>

@@ -4,50 +4,75 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>User Information</title>
-    <!-- 부트스트랩 CSS 추가 -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Grouop Information</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            var token = localStorage.getItem("authToken");
+            if (!token) {
+                window.location.href = "/login";
+                return;
+            }
+
+            var id = new URLSearchParams(window.location.search).get('groupId');
+            var apiUrl = "/group/get/" + id
+            $("#deleteForm").attr("action", "/group/delete/" + id);
+
+            $.ajax({
+                url: apiUrl,
+                type: 'get',
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },success: function(group) {
+                    $('#groupId').val(group.groupId);
+                    $('#groupName').val(group.groupName);
+                    $('#groupManagerId').val(group.groupManagerId);
+                    $('#groupDescription').val(group.groupDescription);
+                    $('#groupImage').val(group.groupImage);
+                    $('#meetingDate').val(group.meetingDate);
+                    $('#meetingAddress').val(group.meetingAddress);
+                    $('#participantCount').val(group.participantCount);
+                },
+                error: function(xhr, status, error) {
+                    $('#groupInfo').after("<p class='text-danger'>모임정보 불러오기 오류 : " + error + "</p>");
+                }
+            });
+
+        });
+
+    </script>
 </head>
 <body>
 <div class="container mt-5">
-    <%
-        String id = request.getParameter("id");
-        String apiUrl = "http://localhost:8080/group/get/" + id;
-        RestTemplate restTemplate = new RestTemplate();
+    <h1 class='mb-3'>Group Information</h1>
 
-        try {
-Group group = restTemplate.getForObject(apiUrl, Group.class);
+    <form action='http://localhost:8080/group/update' method='post' class='mt-3' >
 
-// form 태그로
-out.println("<h1 class='mb-3'>Group Information</h1>");
-out.println("<form action='http://localhost:8080/group/update' method='post' class='mt-3' >");
+        <div class='card'>
+            <div class='card-body' id="groupInfo">
+                <p class='card-text'>groupId:  <input type='text' class='form-control' id='groupId' name='groupId' value='' required readonly></p>
+                <p class='card-text'>groupName: <input type='text' class='form-control' id='groupName' name='groupName' value='' ></p>
+                <p class='card-text'>groupManagerId: <input type='text' class='form-control' id='groupManagerId' name='groupManagerId' value='' ></p>
+                <p class='card-text'>groupDescription: <input type='text' class='form-control' id='groupDescription' name='groupDescription' value='' ></p>
+                <p class='card-text'>groupImage: <input type='text' class='form-control' id='groupImage' name='groupImage' value='' ></p>
+                <p class='card-text'>meetingDate: <input type='text' class='form-control' id='meetingDate' name='meetingDate' value='' ></p>
+                <p class='card-text'>meetingAddress: <input type='text' class='form-control' id='meetingAddress' name='meetingAddress' value='' ></p>
+                <p class='card-text'>participantCount: <input type='text' class='form-control' id='participantCount' name='participantCount' value='' ></p>
+            </div>
+        </div>
+        <button type='submit' class='btn btn-primary mt-3' >수정</button>
+    </form>
 
-out.println("<div class='card'>");
-out.println("<div class='card-body'>");
-out.println("<p class='card-text'>groupId:  <input type='text' class='form-control' id='groupId' name='groupId' value='"+ group.getGroupId()+"' required readonly></p>");
-out.println("<p class='card-text'>groupName: <input type='text' class='form-control' id='groupName' name='groupName' value='"+ group.getGroupName()+"' ></p>");
-out.println("<p class='card-text'>groupManagerId: <input type='text' class='form-control' id='groupManagerId' name='groupManagerId' value='"+ group.getGroupManagerId()+"' ></p>");
-out.println("<p class='card-text'>groupDescription: <input type='text' class='form-control' id='groupDescription' name='groupDescription' value='"+ group.getGroupDescription()+"' ></p>");
-out.println("<p class='card-text'>groupImage: <input type='text' class='form-control' id='groupImage' name='groupImage' value='"+ group.getGroupImage()+"' ></p>");
-out.println("<p class='card-text'>meetingDate: <input type='text' class='form-control' id='meetingDate' name='meetingDate' value='"+ group.getMeetingDate()+"' ></p>");
-out.println("<p class='card-text'>meetingAddress: <input type='text' class='form-control' id='meetingAddress' name='meetingAddress' value='"+ group.getMeetingAddress()+"' ></p>");
-out.println("<p class='card-text'>participantCount: <input type='text' class='form-control' id='participantCount' name='participantCount' value='"+ group.getParticipantCount()+"' ></p>");
-out.println("</div>");
-out.println("</div>");
-out.println("<button type='submit' class='btn btn-primary mt-3' >수정</button>");
-out.println("</form>");
+    <form id="deleteForm" action="" method='post' class='mt-3' >
+        <button type='submit' class='btn btn-primary'>삭제</button>
+    </form>
 
-out.println("<form action='http://localhost:8080/group/delete/"+group.getGroupId() +"' method='post' class='mt-3' >");
-out.println("<button type='submit' class='btn btn-primary'>삭제</button>");
-out.println("</form>");
-
-        } catch (Exception e) {
-            out.println("<p class='text-danger'>Error fetching user information</p>");
-        }
-    %>
 </div>
 <!-- 부트스트랩 JS 추가 -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

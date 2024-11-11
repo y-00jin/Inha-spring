@@ -1,57 +1,64 @@
-<%@ page import="com.obj.meeting.dto.User" %>
-<%@ page import="java.util.List" %>
-<%@ page import="org.springframework.web.client.RestTemplate" %>
-<%@ page import="java.util.Arrays" %>
-<%@ page import="com.obj.meeting.dto.Group" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>User List</title>
-    <!-- 부트스트랩 CSS 추가 -->
+    <title>모임 목록</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var token = localStorage.getItem("authToken");
+            if (!token) {
+                window.location.href = "/login";
+                return;
+            }
+
+            var apiUrl = '/group/list';
+            $.ajax({
+                url: apiUrl,
+                type: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                success: function(groups) {
+                    var tableBody = $('#groupTable tbody');
+                    tableBody.empty();
+                    groups.forEach(function(group) {
+                        var row = $('<tr></tr>');
+                        row.append($('<td></td>').html('<a href="/getGroup?groupId=' + encodeURIComponent(group.groupId) + '">' + group.groupId + '</a>'));
+                        row.append($('<td></td>').text(group.groupName));
+                        row.append($('<td></td>').text(group.meetingDate));
+                        row.append($('<td></td>').text(group.meetingAddress));
+                        row.append($('<td></td>').text(group.participantCount));
+                        tableBody.append(row);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    $('#groupTable').after("<p class='text-danger'>모임목록 불러오기 오류 : " + error + "</p>");
+                }
+            });
+        });
+    </script>
 </head>
 <body>
 <div class="container mt-4">
-    <h1>모임 목록</h1>
-    <%
-        String apiUrl = "http://localhost:8080/group/list";
-        RestTemplate restTemplate = new RestTemplate();
-        try {
-            // RestTemplate을 사용하여 사용자 목록 데이터를 가져옴
-            Group[] groups = restTemplate.getForObject(apiUrl, Group[].class);
-            List<Group> groupList = Arrays.asList(groups); // 배열을 리스트로 변환
-
-            out.print("<table class='table table-striped'>");
-            out.print("<thead class='thead-dark'>");
-            out.print("<tr>");
-            out.print("<th>모임 ID</th>");
-            out.print("<th>모잉 명</th>");
-            out.print("<th>모임 날짜</th>");
-            out.print("<th>모임 장소</th>");
-            out.print("<th>참여자 수</th>");
-            out.print("</tr>");
-            out.print("</thead>");
-            out.print("<tbody>");
-            for(Group group : groupList) {
-                out.print("<tr>");
-                out.print("<td><a href='getGroup?id=" + group.getGroupId() + "'>" + group.getGroupId() + "</a></td>");
-                out.print("<td>" + group.getGroupName() + "</td>");
-                out.print("<td>" + group.getMeetingDate() + "</td>");
-                out.print("<td>" + group.getMeetingAddress() + "</td>");
-                out.print("<td>" + group.getParticipantCount() + "</td>");
-                out.print("</tr>");
-            }
-            out.print("</tbody>");
-            out.print("</table>");
-        } catch (Exception e) {
-            out.println("<p class='text-danger'>Error fetching user list</p>");
-        }
-    %>
+    <h1>모임목록</h1>
+    <table id="groupTable" class="table table-striped">
+        <thead class='thead-dark'>
+        <tr>
+            <th>모임 ID</th>
+            <th>모임 명</th>
+            <th>모임 날짜</th>
+            <th>모임 장소</th>
+            <th>참여자 수</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- 모임 목록 동적 삽입 -->
+        </tbody>
+    </table>
 </div>
-<!-- 부트스트랩 JS 추가 -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
