@@ -7,34 +7,58 @@
     <title>User Information</title>
     <!-- 부트스트랩 CSS 추가 -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            var token = localStorage.getItem("authToken");
+            if (!token) {
+                window.location.href = "/login";
+                return;
+            }
+
+            var id = new URLSearchParams(window.location.search).get('username');
+            var apiUrl = "/user/get/" + id
+
+            // 정보 조회
+            $.ajax({
+                url: apiUrl,
+                type: 'get',
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }, success: function (user) {
+                    $('#username').text(user.username);
+                    $('#email').text(user.email);
+                    $('#role').text(user.role);
+                },
+                error: function (xhr, status, error) {
+                    $('#userInfo').after("<p class='text-danger'>사용자 정보 불러오기 오류 : " + error + "</p>");
+                }
+            });
+        });
+
+    </script>
+
 </head>
 <body>
 <div class="container mt-5">
-    <%
-        String id = request.getParameter("username");
-        String apiUrl = "http://localhost:8080/user/get/" + id;
-        RestTemplate restTemplate = new RestTemplate();
-
-        try {
-            User user = restTemplate.getForObject(apiUrl, User.class);
-
-            out.println("<h1 class='mb-3'>User Information</h1>");
-            out.println("<div class='card'>");
-            out.println("<div class='card-body'>");
-            out.println("<p class='card-text'>Username: " + user.getUsername() + "</p>");
-            out.println("<p class='card-text'>Email: " + user.getEmail() + "</p>");
-            out.println("<p class='card-text'>Role: " + user.getRole() + "</p>");
-            out.println("</div>");
-            out.println("</div>");
-        } catch (Exception e) {
-            out.println("<p class='text-danger'>Error fetching user information</p>");
-        }
-    %>
+    <h1 class='mb-3'>User Information</h1>
+    <div class='card'>
+        <div class='card-body' id="userInfo">
+            <p class='card-text'>Username : <span id="username"></span></p>
+            <p class='card-text'>Email : <span id="email"></span></p>
+            <p class='card-text'>Role : <span id="role"></span></p>
+        </div>
+    </div>
+    <div>
+        <button type="button" class="btn btn-primary mt-3" onclick="window.location.href='/menu'">목록</button>
+    </div>
 </div>
-<!-- 부트스트랩 JS 추가 -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
 

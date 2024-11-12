@@ -5,8 +5,10 @@
 <html>
 <head>
     <title>Grouop Information</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
     <script type="text/javascript">
         $(document).ready(function() {
@@ -21,6 +23,7 @@
             var apiUrl = "/group/get/" + id
             $("#deleteForm").attr("action", "/group/delete/" + id);
 
+            // 정보 조회
             $.ajax({
                 url: apiUrl,
                 type: 'get',
@@ -42,6 +45,49 @@
                 }
             });
 
+
+            // 목록버튼
+            $("#btn-list").on("click", function() {
+                window.location.href = "/menu";
+            });
+
+            // update 버튼 클릭
+            $("#btn-update").off("click").on("click", function() {
+                var formData = $('#updateForm').serialize();  // 폼 데이터 가져오기
+                $.ajax({
+                    url: $('#updateForm').attr("action"),
+                    type: "POST",
+                    data: formData,
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    success: function(response) {
+                        alert("UPDATE SUCCESS");
+                    },
+                    error: function(xhr, status, error) {
+                        alert("UPDATE FAIL");
+                    }
+                });
+            });
+
+            // delete 버튼 클릭
+            $("#btn-delete").off("click").on("click", function() {
+
+                $.ajax({
+                    url: $('#deleteForm').attr("action"),
+                    type: "POST",
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    success: function(response) {
+                        alert("DELETE SUCCESS");
+                        window.location.href = "/menu";
+                    },
+                    error: function(xhr, status, error) {
+                        alert("DELETE FAIL");
+                    }
+                });
+            });
         });
 
     </script>
@@ -50,7 +96,7 @@
 <div class="container mt-5">
     <h1 class='mb-3'>Group Information</h1>
 
-    <form action='http://localhost:8080/group/update' method='post' class='mt-3' >
+    <form action='http://localhost:8080/group/update' method='post' class='mt-3' id="updateForm" >
 
         <div class='card'>
             <div class='card-body' id="groupInfo">
@@ -64,17 +110,20 @@
                 <p class='card-text'>participantCount: <input type='text' class='form-control' id='participantCount' name='participantCount' value='' ></p>
             </div>
         </div>
-        <button type='submit' class='btn btn-primary mt-3' >수정</button>
+
     </form>
 
     <form id="deleteForm" action="" method='post' class='mt-3' >
-        <button type='submit' class='btn btn-primary'>삭제</button>
+
     </form>
 
+    <div style="display: flex;gap:20px; margin:20px 0;">
+        <button type="button" class="btn btn-primary" id="btn-list">목록</button>
+        <button type='button' class='btn btn-primary' id="btn-update">수정</button>
+        <button type='button' class='btn btn-primary' id="btn-delete">삭제</button>
+    </div>
+
 </div>
-<!-- 부트스트랩 JS 추가 -->
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
 

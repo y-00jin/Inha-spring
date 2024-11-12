@@ -1,38 +1,83 @@
 <%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
 <%@ page import="com.obj.meeting.dto.MeetingUserDetails" %>
-<%@ page import="java.util.Collection" %>
-<%@ page import="org.springframework.security.core.GrantedAuthority" %>
-<%@ page import="java.util.Iterator" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
     <title>Save New User</title>
     <!-- 부트스트랩 CSS 추가 -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            var token = localStorage.getItem("authToken");
+            if (!token) {
+                window.location.href = "/login";
+                return;
+            }
+
+            $.ajax({
+                url: '/user/get/loginUser',
+                type: 'GET',
+                dataType: 'json',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                },
+                success: function(data) {
+                    $('#groupManagerId').val(data.username + '('  + data.role + ')');
+                },
+                error: function(xhr, status, error) {
+                    console.error("Failed to fetch user info: " + error);
+                }
+            });
+
+            // save 버튼 클릭
+            $("#btn-save").off("click").on("click", function() {
+                var formData = $('#saveForm').serialize();  // 폼 데이터 가져오기
+                $.ajax({
+                    url: $('#saveForm').attr("action"),
+                    type: "POST",
+                    data: formData,
+                    headers: {
+                        "Authorization": "Bearer " + token
+                    },
+                    success: function(response) {
+                        alert("SAVE SUCCESS");
+                        window.location.href = "/menu";
+                    },
+                    error: function(xhr, status, error) {
+                        alert("SAVE FAIL");
+                    }
+                });
+            });
+
+
+        });
+    </script>
 </head>
 <body>
 <div class="container mt-4">
     <h2>Save New Group</h2>
-    <form action="http://localhost:8080/group/save" method="post" class="mt-3" >
+    <form action="http://localhost:8080/group/save" method="post" class="mt-3" id="saveForm">
         <div class="form-group">
             <label for="groupName">모임 명:</label>
             <input type="text" class="form-control" id="groupName" name="groupName" required>
         </div>
         <div class="form-group">
             <label for="groupManagerId">모임 방장:</label>
-            <%
-                Object principal =  SecurityContextHolder.getContext().getAuthentication().getPrincipal();    // 사용자 정보 가져와서
-                String username = ((MeetingUserDetails)principal).getUsername();    // MEetingUserDetails로 파싱
+<%--            <%--%>
+<%--                Object principal =  SecurityContextHolder.getContext().getAuthentication().getPrincipal();    // 사용자 정보 가져와서--%>
+<%--                String username = ((MeetingUserDetails)principal).getUsername();    // MEetingUserDetails로 파싱--%>
 
-                // 컬렉션 형태로 권한 조회
-//                Collection<? extends GrantedAuthority> authorities = SecurityContextHolder.getContext().getAuthentication().getAuthorities();
-//                Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
-//                GrantedAuthority grantedAuthority = iterator.next();    // 하나만 조회
-//                String role = grantedAuthority.getAuthority();  // 권한 조회
+<%--                String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next().getAuthority();--%>
+<%--            %>--%>
+<%--            <input type="text" class="form-control" id="groupManagerId" name="groupManagerId" value="<%=username%> ( <%= role.replace("ROLE_", "")%> )" readonly >--%>
+            <input type="text" class="form-control" id="groupManagerId" name="groupManagerId" value="" readonly >
 
-                String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next().getAuthority();
-            %>
-            <input type="text" class="form-control" id="groupManagerId" name="groupManagerId" value="<%=username%> ( <%= role.replace("ROLE_", "")%> )" readonly >
         </div>
         <div class="form-group">
             <label for="groupDescription">모임 설명:</label>
@@ -54,12 +99,8 @@
             <label for="participantCount">참여자 수:</label>
             <input type="text" class="form-control" id="participantCount" name="participantCount" value="0">
         </div>
-        <button type="submit" class="btn btn-primary">Save User</button>
+        <button type="button" id="btn-save" class="btn btn-primary">Save Group</button>
     </form>
 </div>
-<!-- 부트스트랩 JS 추가 -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
