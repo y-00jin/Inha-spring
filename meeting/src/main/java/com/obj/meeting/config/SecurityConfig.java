@@ -2,6 +2,8 @@ package com.obj.meeting.config;
 
 import com.obj.meeting.filter.JwtAuthFilter;
 import com.obj.meeting.filter.LoginAuthFilter;
+import com.obj.meeting.oauth2.MeetingOAuth2SuccessHandler;
+import com.obj.meeting.service.MeetingOAuth2UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,19 +13,26 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 public class SecurityConfig {
 
     private AuthenticationConfiguration authenticationConfiguration;
 
     private JwtAuth jwtAuth;
 
-    public SecurityConfig( AuthenticationConfiguration authenticationConfiguration, JwtAuth jwtAuth){
+    private MeetingOAuth2UserService meetingOAuth2UserService;
+
+    private MeetingOAuth2SuccessHandler meetingOAuth2SuccessHandler;
+
+    public SecurityConfig( AuthenticationConfiguration authenticationConfiguration, JwtAuth jwtAuth, MeetingOAuth2UserService meetingOAuth2UserService, MeetingOAuth2SuccessHandler meetingOAuth2SuccessHandler){
         this.authenticationConfiguration = authenticationConfiguration;
         this.jwtAuth = jwtAuth;
+        this.meetingOAuth2UserService = meetingOAuth2UserService;
+        this.meetingOAuth2SuccessHandler = meetingOAuth2SuccessHandler;
     }
 
     @Bean
@@ -37,7 +46,19 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    // 필터체인을 등록하지 않으면 기본 필터체인 15개가 나오고, 다음 코드처럼 필터체인 명시하면 그것만 됨
+    @Bean
+    public AuthenticationSuccessHandler authenticationSuccessHandler(){
+        //여기에서 LoginAuthFilter.java의 successfulAuthentication 함수 기능을 대신 하는 것.
+        return (request, response, authentication)->{
+            String username = authentication.getName();
+            String role = authentication.getAuthorities().iterator().next().getAuthority();
+
+            String token = jwtAuth.generateToken(username, role);
+            response.addHeader("Authorization", "Bearer "+token);
+        };
+    }
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         // csrf 디폴트 필터의 기본값이 enable되어 있는 설정을 disable로 바꿔서 뚫어줌 -> 브라우저에서 요청하는 걸 막음
@@ -52,9 +73,18 @@ public class SecurityConfig {
         // 인증 (람다형식)
         http.formLogin(form -> form
                 .loginPage("/login")        // 로그인 페이지 설정
-                .defaultSuccessUrl("/menu", true)   // 성공 후 url
+                .successHandler(authenticationSuccessHandler())
+//                .defaultSuccessUrl("/menu", true)   // 성공 후 url => 이거 대신 Handler를 사용함
                 .permitAll()  // 모든 권한 허용
         );
+
+        // oauth 로그인 필터 추가
+        http.oauth2Login(oauth2 -> oauth2
+                .loginPage("/login")
+                .userInfoEndpoint(config -> config.userService(meetingOAuth2UserService))
+                .successHandler(meetingOAuth2SuccessHandler)
+        );
+
 
         // iframe 부분 접근할 수 있게
         http.headers(headers -> headers
@@ -72,12 +102,19 @@ public class SecurityConfig {
                 .invalidateHttpSession(true)    // http 세션 삭제
         );
 
-        http.addFilterBefore(new JwtAuthFilter(jwtAuth), LoginAuthFilter.class);   // LoginAuthFilter 앞에 JwtAuthFilter 추가
-
-        // 필터 추가 - UsernamePasswordAuthenticationFilter 대신에 사용할거라 그 위치에 넣을 거임 => addFilterAt
-        http.addFilterAt(new LoginAuthFilter(authenticationManager(authenticationConfiguration), jwtAuth), UsernamePasswordAuthenticationFilter.class);
         // 세션 유지 막기
         http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+
+        // LoginAuthFilter 대신 UsernamePasswordAuthenticationFilter로 이동하는 것. 필터를 줄이기 위해서.
+        http.addFilterBefore(new JwtAuthFilter(jwtAuth), UsernamePasswordAuthenticationFilter.class);
+
+//        http.addFilterBefore(new JwtAuthFilter(jwtAuth), LoginAuthFilter.class);   // LoginAuthFilter 앞에 JwtAuthFilter 추가
+//
+//        // 필터 추가 - UsernamePasswordAuthenticationFilter 대신에 사용할거라 그 위치에 넣을 거임 => addFilterAt
+//        http.addFilterAt(new LoginAuthFilter(authenticationManager(authenticationConfiguration), jwtAuth), UsernamePasswordAuthenticationFilter.class);
+
+
+
 
         return http.build();  // 최종리턴
     }

@@ -32,10 +32,32 @@
 </footer>
 
 <script>
+
+    function getCookie(cookieName){
+        const name = cookieName + "=";
+        const decodedCookie = decodeURIComponent(document.cookie);
+        const ca = decodedCookie.split(";");
+        for(let i =0; i < ca.length; i++){
+            let c = ca[i].trim();
+            if(c.indexOf(name)==0){
+                return c.substring(name.length);
+            }
+        }
+    }
+
+
     function loadPage(url) {
         history.pushState(null, '', url);
 
-        var token = localStorage.getItem('authToken');
+        var token = getCookie("Authorization");
+        //var token = localStorage.getItem('authToken');
+        if(token == null || token == ''){   // 일반로그인
+            token = localStorage.getItem('authToken');
+            alert("일반 로그인 토큰 : " + token);
+        } else{ // 소셜 로그인
+            localStorage.setItem("authToken", token);
+            alert("OAuth2 로그인 토큰 : " + token);
+        }
 
         $.ajax({
             url: url,
@@ -56,7 +78,9 @@
         });
     }
     function logout() {
+        document.cookie = "Authorization=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
         localStorage.removeItem('authToken');
+        localStorage.removeItem('username');
         window.location.href = '/login';
     }
 </script>

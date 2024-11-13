@@ -18,6 +18,8 @@
         </div>
         <button type="submit" class="btn btn-primary">Login</button>
     </form>
+    <p/>
+    <a href="/oauth2/authorization/naver">네이버</a>   <!-- 네이버 로그인 추가 -->
 </div>
 
 <footer style="position: fixed; bottom: 0; width: 100%; background-color: #f8f9fa; text-align: center; padding: 10px 0;">
