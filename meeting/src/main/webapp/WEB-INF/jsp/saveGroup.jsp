@@ -12,7 +12,7 @@
 
 
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
 
             var token = localStorage.getItem("authToken");
             if (!token) {
@@ -21,22 +21,22 @@
             }
 
             $.ajax({
-                url: '/user/get/loginUser',
+                url: '/user/get/groupManagerId',
                 type: 'GET',
                 dataType: 'json',
                 headers: {
                     'Authorization': 'Bearer ' + token
                 },
-                success: function(data) {
-                    $('#groupManagerId').val(data.username + '('  + data.role + ')');
+                success: function (data) {
+                    $('#groupManagerId').val(data.username + '(' + data.role + ')');
                 },
-                error: function(xhr, status, error) {
+                error: function (xhr, status, error) {
                     console.error("Failed to fetch user info: " + error);
                 }
             });
 
             // save 버튼 클릭
-            $("#btn-save").off("click").on("click", function() {
+            $("#btn-save").off("click").on("click", function () {
                 var formData = $('#saveForm').serialize();  // 폼 데이터 가져오기
                 $.ajax({
                     url: $('#saveForm').attr("action"),
@@ -45,11 +45,11 @@
                     headers: {
                         "Authorization": "Bearer " + token
                     },
-                    success: function(response) {
+                    success: function (response) {
                         alert("SAVE SUCCESS");
                         window.location.href = "/menu";
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         alert("SAVE FAIL");
                     }
                 });
@@ -69,31 +69,31 @@
         </div>
         <div class="form-group">
             <label for="groupManagerId">모임 방장:</label>
-<%--            <%--%>
-<%--                Object principal =  SecurityContextHolder.getContext().getAuthentication().getPrincipal();    // 사용자 정보 가져와서--%>
-<%--                String username = ((MeetingUserDetails)principal).getUsername();    // MEetingUserDetails로 파싱--%>
+            <%--            <%--%>
+            <%--                Object principal =  SecurityContextHolder.getContext().getAuthentication().getPrincipal();    // 사용자 정보 가져와서--%>
+            <%--                String username = ((MeetingUserDetails)principal).getUsername();    // MEetingUserDetails로 파싱--%>
 
-<%--                String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next().getAuthority();--%>
-<%--            %>--%>
-<%--            <input type="text" class="form-control" id="groupManagerId" name="groupManagerId" value="<%=username%> ( <%= role.replace("ROLE_", "")%> )" readonly >--%>
-            <input type="text" class="form-control" id="groupManagerId" name="groupManagerId" value="" readonly >
+            <%--                String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next().getAuthority();--%>
+            <%--            %>--%>
+            <%--            <input type="text" class="form-control" id="groupManagerId" name="groupManagerId" value="<%=username%> ( <%= role.replace("ROLE_", "")%> )" readonly >--%>
+            <input type="text" class="form-control" id="groupManagerId" name="groupManagerId" value="" readonly>
 
         </div>
         <div class="form-group">
             <label for="groupDescription">모임 설명:</label>
-            <input type="text" class="form-control" id="groupImage" name="groupImage" >
+            <input type="text" class="form-control" id="groupImage" name="groupImage">
         </div>
         <div class="form-group">
             <label for="groupImage">모임 이미지:</label>
-            <input type="text" class="form-control" id="groupDescription" name="groupDescription" >
+            <input type="text" class="form-control" id="groupDescription" name="groupDescription">
         </div>
         <div class="form-group">
             <label for="meetingDate">모임 날짜:</label>
-            <input type="text" class="form-control" id="meetingDate" name="meetingDate" >
+            <input type="text" class="form-control" id="meetingDate" name="meetingDate">
         </div>
         <div class="form-group">
             <label for="meetingAddress">모임 장소:</label>
-            <input type="text" class="form-control" id="meetingAddress" name="meetingAddress" >
+            <input type="text" class="form-control" id="meetingAddress" name="meetingAddress">
         </div>
         <div class="form-group">
             <label for="participantCount">참여자 수:</label>

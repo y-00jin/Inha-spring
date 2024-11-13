@@ -33,8 +33,8 @@ public class UserController {
         return userService.getUserList();
     }
 
-    @GetMapping("/get/loginUser")
-    public UserEntity getLoginUser() {
+    @GetMapping("/get/groupManagerId")
+    public UserEntity getUserGroupManagerId() {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = (User) principal;
