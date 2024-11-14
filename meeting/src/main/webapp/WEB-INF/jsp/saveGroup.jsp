@@ -1,5 +1,6 @@
 <%@ page import="org.springframework.security.core.context.SecurityContextHolder" %>
 <%@ page import="com.obj.meeting.dto.MeetingUserDetails" %>
+<%@ page import="org.springframework.security.core.userdetails.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -19,21 +20,6 @@
                 window.location.href = "/login";
                 return;
             }
-
-            $.ajax({
-                url: '/user/get/groupManagerId',
-                type: 'GET',
-                dataType: 'json',
-                headers: {
-                    'Authorization': 'Bearer ' + token
-                },
-                success: function (data) {
-                    $('#groupManagerId').val(data.username + '(' + data.role + ')');
-                },
-                error: function (xhr, status, error) {
-                    console.error("Failed to fetch user info: " + error);
-                }
-            });
 
             // save 버튼 클릭
             $("#btn-save").off("click").on("click", function () {
@@ -69,14 +55,14 @@
         </div>
         <div class="form-group">
             <label for="groupManagerId">모임 방장:</label>
-            <%--            <%--%>
-            <%--                Object principal =  SecurityContextHolder.getContext().getAuthentication().getPrincipal();    // 사용자 정보 가져와서--%>
-            <%--                String username = ((MeetingUserDetails)principal).getUsername();    // MEetingUserDetails로 파싱--%>
+                <%
+                    Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                    User user = (User) principal;
+                    String username = user.getUsername();
+                    String role = user.getAuthorities().iterator().next().getAuthority().replace("ROLE_", "");
 
-            <%--                String role = SecurityContextHolder.getContext().getAuthentication().getAuthorities().iterator().next().getAuthority();--%>
-            <%--            %>--%>
-            <%--            <input type="text" class="form-control" id="groupManagerId" name="groupManagerId" value="<%=username%> ( <%= role.replace("ROLE_", "")%> )" readonly >--%>
-            <input type="text" class="form-control" id="groupManagerId" name="groupManagerId" value="" readonly>
+                %>
+                <input type="text" class="form-control" id="groupManagerId" name="groupManagerId" value="<%=username%> ( <%= role %> )" readonly >
 
         </div>
         <div class="form-group">

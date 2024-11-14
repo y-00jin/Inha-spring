@@ -33,15 +33,4 @@ public class UserController {
         return userService.getUserList();
     }
 
-    @GetMapping("/get/groupManagerId")
-    public UserEntity getUserGroupManagerId() {
-
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = (User) principal;
-
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(user.getUsername());
-        userEntity.setRole(user.getAuthorities().iterator().next().getAuthority().replace("ROLE_", ""));
-        return userEntity;
-    }
 }
