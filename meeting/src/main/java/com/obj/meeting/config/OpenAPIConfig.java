@@ -23,7 +23,7 @@ public class OpenAPIConfig {
     public GroupedOpenApi publicAPI(){
         return GroupedOpenApi.builder()
                 .group("public")
-                .packagesToScan("com.obj.meeting2")
+                .packagesToScan("com.obj.meeting")
                 .build();
     }
 
