@@ -1,3 +1,4 @@
+<%@ page import="java.util.List, org.springframework.web.client.RestTemplate, java.util.Arrays, com.obj.meeting.dto.Group" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -8,6 +9,7 @@
         $(document).ready(function() {
             var token = localStorage.getItem("authToken");
             if (!token) {
+                alert("No token found. Redirecting to login page.");
                 window.location.href = "/login";
                 return;
             }
@@ -19,12 +21,25 @@
                 headers: {
                     'Authorization': 'Bearer ' + token
                 },
+                /* success: function(groups) {
+                     var tableBody = $('#groupTable tbody');
+                     tableBody.empty();
+                     groups.forEach(function(group) {
+                         var row = $('<tr></tr>');
+                         row.append($('<td></td>').html('<a href="/getGroup?groupId=' + encodeURIComponent(group.groupId) + '">' + group.groupId + '</a>'));
+                         row.append($('<td></td>').text(group.groupName));
+                         row.append($('<td></td>').text(group.meetingDate));
+                         row.append($('<td></td>').text(group.meetingAddress));
+                         row.append($('<td></td>').text(group.participantCount));
+                         tableBody.append(row);
+                     });
+                 },*/
                 success: function(groups) {
                     var tableBody = $('#groupTable tbody');
                     tableBody.empty();
                     groups.forEach(function(group) {
                         var row = $('<tr></tr>');
-                        row.append($('<td></td>').html('<a href="/getGroup?groupId=' + encodeURIComponent(group.groupId) + '">' + group.groupId + '</a>'));
+                        row.append($('<td></td>').html('<a href="#" onclick="loadPage(\'/getGroup?groupId=' + encodeURIComponent(group.groupId) + '\'); return false;">' + group.groupId + '</a>'));
                         row.append($('<td></td>').text(group.groupName));
                         row.append($('<td></td>').text(group.meetingDate));
                         row.append($('<td></td>').text(group.meetingAddress));
@@ -32,8 +47,9 @@
                         tableBody.append(row);
                     });
                 },
+
                 error: function(xhr, status, error) {
-                    $('#groupTable').after("<p class='text-danger'>모임목록 불러오기 오류 : " + error + "</p>");
+                    $('#groupTable').after("<p class='text-danger'>Error fetching group list: " + error + "</p>");
                 }
             });
         });
@@ -53,11 +69,10 @@
         </tr>
         </thead>
         <tbody>
-        <!-- 모임 목록 동적 삽입 -->
+        <!-- 모임 목록 자동 삽입 -->
         </tbody>
     </table>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>

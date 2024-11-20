@@ -7,6 +7,30 @@
     <title>모임서비스 메뉴</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+        #contentArea {
+            flex: 1 0 auto;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 100px; 
+        }
+        footer {
+            flex-shrink: 0;
+            width: 100%;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px; 
+        }
+    </style>
+
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -27,37 +51,39 @@
 
 <div id="contentArea" style="padding: 20px;"></div>
 
-<footer style="position: fixed; bottom: 0; width: 100%; background-color: #f8f9fa; text-align: center; padding: 10px 0;">
+<footer>
     <p>© 2024 C.J.Kim (Dept.of Computer & System Engineering). All rights reserved.</p>
 </footer>
 
 <script>
-
-    function getCookie(cookieName){
+    function getCookie(cookieName) {
         const name = cookieName + "=";
         const decodedCookie = decodeURIComponent(document.cookie);
-        const ca = decodedCookie.split(";");
-        for(let i =0; i < ca.length; i++){
+        const ca = decodedCookie.split(';');
+        for(let i = 0; i < ca.length; i++) {
             let c = ca[i].trim();
-            if(c.indexOf(name)==0){
+            if (c.indexOf(name) == 0) {   
                 return c.substring(name.length);
             }
         }
+        return "";
     }
 
 
     function loadPage(url) {
         history.pushState(null, '', url);
 
-        var token = getCookie("Authorization");
-        //var token = localStorage.getItem('authToken');
-        if(token == null || token == ''){   // 일반로그인
+        var token = getCookie('Authorization');
+
+        if(token == null || token === ''){
             token = localStorage.getItem('authToken');
-            alert("일반 로그인 토큰 : " + token);
-        } else{ // 소셜 로그인
-            localStorage.setItem("authToken", token);
-            alert("OAuth2 로그인 토큰 : " + token);
+            // alert('일반 로그인 토큰 : '+token);
+        }else {
+            localStorage.setItem('authToken', token);
+            // alert('OAuth2 로그인 토큰 : '+token);
         }
+
+        //var token = localStorage.getItem('authToken');
 
         $.ajax({
             url: url,
@@ -83,6 +109,7 @@
         localStorage.removeItem('username');
         window.location.href = '/login';
     }
+
 </script>
 </body>
 </html>

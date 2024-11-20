@@ -46,7 +46,7 @@
         })
             .then(response => {
                 const authToken = response.headers.get('Authorization');
-                alert('login 후 토큰 발급 : '+authToken);
+                // alert('login 후 토큰 발급 : '+authToken);
                 if (response.ok && authToken) {
                     localStorage.setItem('authToken', authToken.split(' ')[1]);
                     localStorage.setItem('username', username);
