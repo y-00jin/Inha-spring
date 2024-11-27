@@ -74,6 +74,7 @@ public class GroupController {
     public List<GroupEntity> getGroupList(){
         return groupService.getGroupList();
     }
+
     @PostMapping("/update")
     public String updateGroup(GroupEntity group){
         return groupService.updateGroup(group);
