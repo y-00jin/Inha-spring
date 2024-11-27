@@ -41,7 +41,8 @@ public class GroupController {
 
     @PostConstruct  // 생성자 이후에 한번 실행됨
     public void init(){
-        this.location = Paths.get("/Users/y00jin/Documents/upload");   // 파일 저장할 위치
+//        this.location = Paths.get("/Users/y00jin/Documents/upload");   // 파일 저장할 위치
+        this.location = Paths.get("C:/y00jin/upload");   // 파일 저장할 위치
     }
 
     @PostMapping("/save")

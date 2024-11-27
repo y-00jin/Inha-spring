@@ -43,13 +43,13 @@ public class LoginAuthFilter extends UsernamePasswordAuthenticationFilter {
     // 로그인 성공 시
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
-        System.out.println("==== 로그인 성공 ====");
+        System.out.println("==== LoginAuthFilter 로그인 성공 ====");
 
         String username = authentication.getName();
         String role = authentication.getAuthorities().iterator().next().getAuthority();
 
         String token = jwtAuth.generateToken(username, role);
-
+        System.out.println(">>> LoginAuthFilter 토큰 : " + token);
         response.addHeader("Authorization", "Bearer " + token);
     }
 

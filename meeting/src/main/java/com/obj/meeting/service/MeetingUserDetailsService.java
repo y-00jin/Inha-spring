@@ -19,7 +19,7 @@ public class MeetingUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity userEntity = userRepository.findByUsername(username);
         if(userEntity != null){
-            System.out.println("========== 로그인 성공 ==========");
+            System.out.println("========== MeetingUserDetailsService 로그인 성공 ==========");
             return new MeetingUserDetails(userEntity);  // 회원 정보가 존재하면 MeetingUserDetails에 조회한 userEntity 담아서 리턴
         }
         return null;

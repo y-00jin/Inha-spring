@@ -7,7 +7,7 @@
     <title>모임 등록</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=토큰&callback=initMap&libraries=places" async defer></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBM8aVB8V2Sw-Vb2xyFC6WVR66x1pWEu_0&callback=initMap&libraries=places" async defer></script>
     <script>
         let map;
         let marker;
